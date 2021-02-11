@@ -9,6 +9,7 @@ import { Router,ActivatedRoute, ParamMap} from '@angular/router'
   &nbsp;
   <a (click) = onNext()><span class="badge">Next</span></a>
   </nav>
+  <button (click) = gotoDepartments()>Back</button>
   `,
   styleUrls: []
 })
@@ -33,6 +34,10 @@ public departmentId;
   onNext(){
     let next : number = this.departmentId+1;
     this.router.navigate(['/department',next]);
+  }
+  gotoDepartments(){
+    let isselected = this.departmentId ?this.departmentId:null;
+    this.router.navigate(['/department',{id:isselected}]);
   }
 
 }

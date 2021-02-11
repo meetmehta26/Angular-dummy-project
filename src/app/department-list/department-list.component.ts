@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { EmployeeService } from '../employee.service';
 
 @Component({
@@ -8,13 +8,12 @@ import { EmployeeService } from '../employee.service';
     <p>
       department-list works!
     </p>
-    {{errormessage}}
     <h3>
     Department List
   </h3>
   <ul class="items">
-    <li *ngFor="let department of department" (click)="onSelect(department)">
-      <span class="badge">{{department.id}}</span> {{department.name}}
+    <li (click)="onSelect(departments)" [class.selected]="isSelected(departments)"  *ngFor="let departments of department" >
+      <span class="badge">{{departments.id}}</span> {{departments.name}}
     </li>
   </ul>
   
@@ -23,7 +22,7 @@ import { EmployeeService } from '../employee.service';
   ]
 })
 export class DepartmentListComponent implements OnInit {
-  public errormessage =''; 
+  public isselected ; 
   public departmentList: any[]=[]; 
   department :any[]= [
     {"id": 1, "name": "Angular"},
@@ -32,18 +31,22 @@ export class DepartmentListComponent implements OnInit {
     {"id": 4, "name": "Ruby"},
     {"id": 5, "name": "Bootstrap"}
   ]
-  constructor(private employeeeService : EmployeeService, private router: Router) { }
+  constructor(private employeeeService : EmployeeService, private router: Router,private route:ActivatedRoute) { }
 
   ngOnInit(): void {
-    this.employeeeService.getEmployee()
-      .subscribe(data =>this.departmentList=data ,
-        error => this.errormessage=error
-        )
+        this.route.paramMap.subscribe((params:ParamMap) =>{
+          let id = parseInt(params.get('id')!);
+          this.isselected=id;
+  
+      })
 
   }
   onSelect(department: { id: any; }){
-    this.router.navigate(['/department',department.id])
+    this.router.navigate([department.id],{relativeTo:this.route});
 
+  }
+  isSelected(departments){
+    return departments.id ==this.isselected;
   }
 
 }
